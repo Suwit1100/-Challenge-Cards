@@ -10,18 +10,37 @@
 
     <div class="game-header">
       <h1 class="game-title">
-        <span class="icon">🎴</span>
-        <span class="text">FATE DRAW</span>
+        <div class="logo-wrapper">
+          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="7" y="5" width="14" height="16" rx="2" fill="#ff4757" fill-opacity="0.3" stroke="#ff4757"
+              stroke-width="2" />
+            <rect x="3" y="3" width="14" height="16" rx="2" fill="#1e3c72" stroke="#ff4757" stroke-width="2" />
+            <path d="M7 7h6M7 11h6M7 15h6" stroke="#ff4757" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+          </svg>
+        </div>
+        <span class="text">จั่วไพ่จ้า <small></small></span>
       </h1>
 
       <div class="header-controls">
-        <button class="icon-button" @click="toggleAudio" :class="{ muted: !audioEnabled }">
+        <button class="icon-button" @click="toggleAudio" :class="{ muted: !audioEnabled }" aria-label="Toggle Sound">
           <div class="btn-bg"></div>
-          <span class="material-icon">{{ audioEnabled ? '🔊' : '🔇' }}</span>
+          <svg v-if="audioEnabled" class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+          </svg>
+          <svg v-else class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6" />
+          </svg>
         </button>
-        <button class="icon-button" @click="resetDeck">
+
+        <button class="icon-button" @click="resetDeck" aria-label="Reset Game">
           <div class="btn-bg"></div>
-          <span class="material-icon">🔄</span>
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+            <path d="M21 3v5h-5" />
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+            <path d="M3 21v-5h5" />
+          </svg>
         </button>
       </div>
     </div>
