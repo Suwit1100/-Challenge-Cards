@@ -55,8 +55,10 @@
       </div>
 
       <!-- ไพ่ที่จั่วออกมา -->
-      <div v-if="currentCard" :class="['revealed-card', { active: isAnimating }]">
+      <div v-if="currentCard" :class="['revealed-card', { active: isAnimating }]" @click="closeCard">
         <GameCard :card="currentCard" />
+
+        <div v-if="isAnimating" class="tap-hint">แตะเพื่อปิด</div>
       </div>
     </div>
 
@@ -111,11 +113,6 @@ function drawCard() {
       }, 400);
     }
 
-    // เอาไพ่ออกจาก deck หลัง animation จบ
-    setTimeout(() => {
-      deck.value = deck.value.slice(1);
-      isAnimating.value = false;
-    }, 2000);
   }, 300);
 }
 
@@ -135,52 +132,38 @@ function toggleAudio() {
     stopSpeaking();
   }
 }
+
+// ฟังก์ชันสำหรับปิดไพ่เมื่อคลิก
+function closeCard() {
+  deck.value = deck.value.slice(1);
+  isAnimating.value = false;
+  stopSpeaking(); // สั่งให้หยุดพูดเมื่อปิดไพ่ด้วย (ถ้าต้องการ)
+}
 </script>
 
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+/* ===== Global Styles ===== */
 .game-container {
-  position: relative;
-  min-height: 100vh;
   width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
-  padding: 40px 20px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
-  gap: 40px;
-  overflow: hidden;
-}
-
-/* พื้นหลังเหมือนผ้า */
-.game-container::before {
-  content: '';
-  position: absolute;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.03) 2px, rgba(255, 255, 255, 0.03) 4px),
-    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 255, 255, 0.03) 2px, rgba(255, 255, 255, 0.03) 4px);
-  opacity: 0.5;
-  pointer-events: none;
+  overflow: hidden;
+  padding: 1rem;
+  margin: 0;
 }
 
-/* Background Decoration - ประกายดาว */
+/* ===== Background Decoration ===== */
 .bg-decoration {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  inset: 0;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .sparkle {
@@ -189,31 +172,30 @@ function toggleAudio() {
   height: 4px;
   background: white;
   border-radius: 50%;
-  box-shadow: 0 0 20px 4px rgba(255, 255, 255, 0.8);
-  animation: twinkle 3s ease-in-out infinite;
+  animation: twinkle 3s infinite;
 }
 
 .sparkle-1 {
-  top: 15%;
-  left: 20%;
+  top: 20%;
+  left: 15%;
   animation-delay: 0s;
 }
 
 .sparkle-2 {
-  top: 30%;
-  right: 15%;
+  top: 40%;
+  right: 20%;
   animation-delay: 1s;
 }
 
 .sparkle-3 {
-  bottom: 25%;
-  left: 15%;
+  top: 60%;
+  left: 25%;
   animation-delay: 2s;
 }
 
 .sparkle-4 {
-  bottom: 40%;
-  right: 25%;
+  top: 80%;
+  right: 30%;
   animation-delay: 1.5s;
 }
 
@@ -221,45 +203,46 @@ function toggleAudio() {
 
   0%,
   100% {
-    opacity: 0;
-    transform: scale(0.5);
+    opacity: 0.3;
+    transform: scale(1);
   }
 
   50% {
     opacity: 1;
-    transform: scale(1.2);
+    transform: scale(1.5);
   }
 }
 
+/* ===== Header ===== */
 .game-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   width: 100%;
   max-width: 600px;
-  gap: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
   z-index: 10;
 }
 
 .game-title {
-  font-size: 32px;
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 700;
   color: white;
-  font-weight: 800;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  letter-spacing: 1px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  margin: 0;
 }
 
 .header-controls {
   display: flex;
-  gap: 12px;
+  gap: 0.5rem;
 }
 
 .icon-button {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
+  border: none;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   color: white;
@@ -267,64 +250,53 @@ function toggleAudio() {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   overflow: hidden;
-}
-
-.icon-button svg {
-  position: relative;
-  z-index: 2;
-}
-
-.button-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
-  opacity: 0;
-  transform: translate(-50%, -50%);
-  transition: all 0.6s ease-out;
-  pointer-events: none;
 }
 
 .icon-button:hover {
   background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: scale(1.05) translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-}
-
-.icon-button:hover .button-glow {
-  width: 120px;
-  height: 120px;
-  opacity: 1;
+  transform: translateY(-2px);
 }
 
 .icon-button:active {
-  transform: scale(0.95);
+  transform: translateY(0);
 }
 
+.button-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.icon-button:hover .button-glow {
+  opacity: 1;
+}
+
+/* ===== Deck Area ===== */
 .deck-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
+  padding: 2rem 0;
   position: relative;
-  width: 320px;
-  height: 450px;
-  z-index: 10;
 }
 
 .deck-wrapper {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  transition: transform 0.2s ease;
+  z-index: 1;
 }
 
 .deck-wrapper.shake {
-  animation: shake 0.3s ease-in-out;
+  animation: shake 0.3s ease;
 }
 
 @keyframes shake {
@@ -335,87 +307,139 @@ function toggleAudio() {
   }
 
   25% {
-    transform: translateX(-10px) rotate(-3deg);
+    transform: translateX(-5px) rotate(-2deg);
   }
 
   75% {
-    transform: translateX(10px) rotate(3deg);
+    transform: translateX(5px) rotate(2deg);
   }
 }
 
 .empty-deck {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+  text-align: center;
   color: white;
-  font-size: 24px;
-  font-weight: 600;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+}
+
+.empty-deck p {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .reset-button {
   position: relative;
-  padding: 14px 32px;
-  border-radius: 999px;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.15);
+  padding: 0.75rem 2rem;
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
   color: white;
-  font-size: 18px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   overflow: hidden;
 }
 
 .reset-button:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: white;
-  transform: scale(1.05);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-}
-
-.reset-button:hover .button-glow {
-  width: 200px;
-  height: 200px;
-  opacity: 1;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 }
 
 .revealed-card {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.5) rotateY(90deg);
   opacity: 0;
-  transform: translateY(0) rotateY(180deg) scale(0.8);
-  transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-  pointer-events: none;
+  z-index: 10;
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: blur(10px);
 }
 
 .revealed-card.active {
   opacity: 1;
-  transform: translateY(-40px) rotateY(0deg) scale(1.05);
-  z-index: 100;
+  transform: translate(-50%, -50%) scale(1.1) rotateY(0deg);
+  filter: blur(0px);
+  animation: cardReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1),
+    cardFloat 2s ease-in-out 0.8s infinite,
+    cardGlow 1.5s ease-in-out infinite;
 }
 
+@keyframes cardReveal {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5) rotateY(90deg);
+    opacity: 0;
+    filter: blur(10px);
+  }
+
+  60% {
+    transform: translate(-50%, -50%) scale(1.15) rotateY(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1.1) rotateY(0deg);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+@keyframes cardFloat {
+
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1.1) translateY(0px);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.1) translateY(-10px);
+  }
+}
+
+@keyframes cardGlow {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.5));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 40px rgba(102, 126, 234, 0.8)) drop-shadow(0 0 60px rgba(118, 75, 162, 0.6));
+  }
+}
+
+/* ===== Draw Button ===== */
 .draw-button {
   position: relative;
-  padding: 24px 72px;
-  font-size: 28px;
-  font-weight: 800;
-  border-radius: 999px;
+  padding: 1rem 3rem;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   border: none;
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-  color: #1e3c72;
+  border-radius: 50px;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
   overflow: hidden;
   z-index: 10;
+  margin-bottom: 1rem;
+}
+
+.draw-button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(245, 87, 108, 0.5);
+}
+
+.draw-button:active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.draw-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .button-text {
@@ -423,92 +447,66 @@ function toggleAudio() {
   z-index: 2;
 }
 
-.draw-button:hover:not(:disabled) {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
-}
-
-.draw-button:hover:not(:disabled) .button-glow {
-  width: 300px;
-  height: 300px;
-  opacity: 1;
-}
-
-.draw-button:active:not(:disabled) {
-  transform: translateY(-2px) scale(1.02);
-}
-
-.draw-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-}
-
+/* ===== Card Counter ===== */
 .card-counter {
-  position: relative;
-  padding: 12px 28px;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 999px;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   z-index: 10;
 }
 
 .counter-text {
   color: white;
-  font-size: 18px;
+  font-size: 1rem;
   font-weight: 600;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsive */
-@media (max-width: 640px) {
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
   .game-container {
-    padding: 20px 16px;
-    gap: 32px;
+    padding: 0.5rem;
   }
 
-  .game-title {
-    font-size: 26px;
+  .game-header {
+    margin-bottom: 1rem;
+  }
+
+  .deck-area {
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+
+  .draw-button {
+    padding: 0.875rem 2.5rem;
+    font-size: 1.125rem;
   }
 
   .icon-button {
-    width: 44px;
-    height: 44px;
-  }
-
-  .deck-area {
-    width: 280px;
-    height: 400px;
-  }
-
-  .draw-button {
-    padding: 20px 56px;
-    font-size: 24px;
-  }
-
-  .card-counter {
-    padding: 10px 24px;
-  }
-
-  .counter-text {
-    font-size: 16px;
+    width: 40px;
+    height: 40px;
   }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 480px) {
   .game-title {
-    font-size: 22px;
-  }
-
-  .deck-area {
-    width: 240px;
-    height: 360px;
+    font-size: 1.25rem;
   }
 
   .draw-button {
-    padding: 18px 48px;
-    font-size: 20px;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+  }
+
+  .icon-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .counter-text {
+    font-size: 0.875rem;
   }
 }
 </style>

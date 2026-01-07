@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card-inner">
-            <!-- ด้านหน้า (หงาย) -->
+            <!-- ด้านหน้า (แสดงข้อมูล) -->
             <div class="card-front">
                 <div class="card-pattern">
                     <div class="card-content">
@@ -19,13 +19,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- ด้านหลัง (แสดงข้อมูล) -->
-            <div class="card-back">
-                <div class="card-back-content">
-                    <div class="back-pattern"></div>
-                </div>
-            </div>
         </div>
     </div>
 </template>
@@ -40,197 +33,208 @@ defineProps<{
 
 <style scoped>
 .card {
-    width: 320px;
-    height: 450px;
+    width: 280px;
+    height: 400px;
     perspective: 1000px;
-    cursor: pointer;
 }
 
 .card-inner {
+    position: relative;
     width: 100%;
     height: 100%;
-    position: relative;
+    transition: transform 0.6s;
     transform-style: preserve-3d;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.card:hover .card-inner {
-    transform: translateY(-8px);
-}
-
-.card-front,
-.card-back {
+/* ด้านหน้าไพ่ */
+.card-front {
     position: absolute;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
-    border-radius: 24px;
+    border-radius: 20px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
     overflow: hidden;
-}
-
-.card-front {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-    box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
 }
 
 .card-pattern {
     width: 100%;
     height: 100%;
+    background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
     position: relative;
-    background-image:
-        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-        repeating-linear-gradient(45deg,
-            transparent,
-            transparent 20px,
-            rgba(255, 255, 255, 0.03) 20px,
-            rgba(255, 255, 255, 0.03) 40px);
 }
 
+/* Background subtle pattern */
+.card-pattern::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image:
+        repeating-linear-gradient(0deg,
+            #000 0px,
+            #000 1px,
+            transparent 1px,
+            transparent 20px),
+        repeating-linear-gradient(90deg,
+            #000 0px,
+            #000 1px,
+            transparent 1px,
+            transparent 20px);
+}
+
+/* Content */
 .card-content {
+    position: relative;
     width: 100%;
     height: 100%;
-    padding: 32px;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 
+/* Header */
 .card-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    margin-bottom: 1.5rem;
 }
 
 .card-category {
-    font-size: 11px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #667eea;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 700;
-    background: rgba(255, 255, 255, 0.15);
-    padding: 6px 14px;
+    letter-spacing: 1px;
+    background: rgba(102, 126, 234, 0.1);
+    padding: 0.25rem 0.75rem;
     border-radius: 20px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .card-icon {
-    font-size: 24px;
-    color: rgba(255, 255, 255, 0.6);
-    animation: float 3s ease-in-out infinite;
+    font-size: 1.25rem;
+    color: #667eea;
+    opacity: 0.6;
 }
 
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translateY(0px);
-    }
-
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
+/* Body */
 .card-body {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 16px;
-    padding: 20px 0;
+    text-align: center;
 }
 
 .card-title {
-    font-size: 32px;
-    font-weight: 800;
-    color: #ffffff;
-    line-height: 1.2;
-    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
-    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0 0 1rem 0;
+    line-height: 1.3;
 }
 
 .card-text {
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.95);
+    color: #4a5568;
     margin: 0;
-    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Footer */
 .card-footer {
     display: flex;
     justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
 }
 
 .card-decoration {
     width: 60px;
-    height: 4px;
-    background: linear-gradient(90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.5) 50%,
-            transparent 100%);
-    border-radius: 2px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #667eea, transparent);
+    border-radius: 10px;
 }
 
-.card-back {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    transform: rotateY(180deg);
-    box-shadow: 0 20px 60px rgba(245, 87, 108, 0.4);
+/* Shine effect */
+.card-pattern::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.3) 50%,
+            transparent 70%);
+    transform: rotate(45deg);
+    animation: shine 3s infinite;
 }
 
-.card-back-content {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+@keyframes shine {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
 }
 
-.back-pattern {
-    width: 80%;
-    height: 80%;
-    background-image:
-        repeating-linear-gradient(45deg,
-            rgba(255, 255, 255, 0.1) 0px,
-            rgba(255, 255, 255, 0.1) 2px,
-            transparent 2px,
-            transparent 12px),
-        repeating-linear-gradient(-45deg,
-            rgba(255, 255, 255, 0.1) 0px,
-            rgba(255, 255, 255, 0.1) 2px,
-            transparent 2px,
-            transparent 12px);
-    border-radius: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-@media (max-width: 640px) {
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
     .card {
-        width: 280px;
-        height: 400px;
+        width: 240px;
+        height: 340px;
     }
 
     .card-content {
-        padding: 24px;
+        padding: 1.5rem;
     }
 
     .card-title {
-        font-size: 26px;
+        font-size: 1.5rem;
     }
 
     .card-text {
-        font-size: 15px;
+        font-size: 0.9rem;
     }
 
     .card-category {
-        font-size: 10px;
-        padding: 5px 12px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        width: 200px;
+        height: 280px;
+    }
+
+    .card-content {
+        padding: 1.25rem;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .card-text {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .card-category {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.6rem;
+    }
+
+    .card-icon {
+        font-size: 1rem;
     }
 }
 </style>
