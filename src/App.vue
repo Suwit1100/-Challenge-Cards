@@ -153,7 +153,7 @@ function drawCard() {
 
       if (audioEnabled.value) {
         setTimeout(() => {
-          speakText(drawnCard.text, drawnCard.title);
+          speakText(drawnCard.text, drawnCard.title, drawnCard.category);
         }, 1000);
       }
     }, 200); // ให้ Flash ค้างไว้นิดนึงเพื่อความสะใจ

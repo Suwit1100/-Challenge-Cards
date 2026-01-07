@@ -1,7 +1,7 @@
 /**
  * อ่านข้อความด้วย Web Speech API
  */
-export function speakText(text: string, title: string): void {
+export function speakText(text: string, title: string, category: string): void {
   if (!("speechSynthesis" in window)) {
     console.warn("Web Speech API ไม่รองรับในเบราว์เซอร์นี้");
     return;
@@ -9,7 +9,9 @@ export function speakText(text: string, title: string): void {
 
   window.speechSynthesis.cancel();
 
-  const utterance = new SpeechSynthesisUtterance(`${title}. ${text}`);
+  const utterance = new SpeechSynthesisUtterance(
+    `ไพ่ ${category}. ${title}. ${text}`
+  );
   utterance.lang = "th-TH";
   utterance.rate = 1.4;
   utterance.pitch = 1.1;
