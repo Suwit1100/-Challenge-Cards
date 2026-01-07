@@ -70,7 +70,7 @@
     </div>
 
     <a href="https://instagram.com/suwitleee" target="_blank" class="creator-credit" style="color: white;">
-      <span class="credit-label">Created by Suwit 2025</span>
+      <span class="credit-label">Created by Suwit 2026</span>
       <div class="credit-name">
         @suwitleee
       </div>

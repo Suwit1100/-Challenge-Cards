@@ -11,7 +11,7 @@ export function speakText(text: string, title: string): void {
 
   const utterance = new SpeechSynthesisUtterance(`${title}. ${text}`);
   utterance.lang = "th-TH";
-  utterance.rate = 1.2;
+  utterance.rate = 1.4;
   utterance.pitch = 1.1;
 
   // เลือก voice ภาษาไทยถ้ามี
